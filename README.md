@@ -1,4 +1,5 @@
 # DiecastModelRecords
+![diecastapp](https://user-images.githubusercontent.com/37677214/123234543-4fff7480-d4db-11eb-89d7-d97234b92819.png)
 
 Simple website for recording information about my Diecast car models collection
 
