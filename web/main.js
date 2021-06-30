@@ -27,7 +27,7 @@ function fillTable(data) {
         trow += "<td>" + element.year + "</td>";
         trow += "<td>" + element.modelnumber + "</td>";
         trow += "<td>" + element.manufacturer + "</td>";
-        trow += "<td> <div class=\"btn-group pull-right\"> <button type=\"button\"class=\"btn btn-info\" onlick=\"edit()\" id=\"edit\"> Edit </button> <button type=\"button\" class=\"btn btn-danger\"onlick=\"remove(this)\" id=\"remove\">Remove</button></div></td></tr>";
+        trow += "<td> <div class=\"btn-group pull-right\"> <button type=\"button\" class=\"btn btn-info\" onclick=\"edit()\" id=\"edit\"> Edit </button> <button type=\"button\" class=\"btn btn-danger\" onlick=\"removeModel(this)\" id=\"remove\">Remove</button></div></td></tr>";
     })
     document.getElementById('data').innerHTML = trow;
 }
@@ -37,9 +37,9 @@ function addData(){
     var set = document.getElementById("set").value;
     var year = document.getElementById("year").value;
     var mfact = document.getElementById("mfact").value;
-    var modelNumber = document.getElementById("model").value;
+    var modelnumber = document.getElementById("model").value;
     var photographed = document.getElementById("photo").value;
-
+    console.log(photographed);
     if (name.length == 0 || modelnumber.length == 0){
         alert("You have to enter Model name and Model number")
     } else { 
@@ -49,7 +49,7 @@ function addData(){
                 getData();
             }
         };
-        xhttp.open("POST", "http://localhost:8070/addmodel/", true);
+        xhttp.open("POST", "http://localhost:8070/addmodel", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
 
         var data = {
@@ -57,7 +57,7 @@ function addData(){
             set: set,
             year: year,
             manufacturer: mfact,
-            modelnumber: modelNumber
+            modelnumber: modelnumber
         };
         var str = JSON.stringify(data);
         console.log(str);
@@ -65,7 +65,8 @@ function addData(){
     }
 }
 
-function remove(object){
+function removeModel(object){
+    console.log("REMOVE");
     if (typeof(object) == "object") {
         var curentRow = ($object).closest("tr");
         var name = curentRow.find("td:eq(0)").text();
@@ -76,7 +77,7 @@ function remove(object){
                 getData();
             }
         };
-        xhttp.open("DELETE", "http://localhost:8070/removemodel/"+name+"/"+modelnum, true);
+        xhttp.open("DELETE", "http://localhost:8070/removemodel"+name+"/"+modelnum, true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send();
     } else {

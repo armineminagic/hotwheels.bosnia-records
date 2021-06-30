@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
@@ -19,9 +20,9 @@ type dbHandler struct {
 type HwModel struct {
 	Name         string `json:"name"`
 	Set          string `json:"set"`
-	Year         int    `json:"year"`
+	Year         string `json:"year"`
 	Manufacturer string `json:"manufacturer"`
-	ModelNumber  int    `json:"modelnumber"`
+	ModelNumber  string `json:"modelnumber"`
 }
 
 func main() {
@@ -31,7 +32,7 @@ func main() {
 	router.HandleFunc("/getmodels", middleware(db.GetAllmodels))
 	router.HandleFunc("/addmodel", middleware(db.AddModel))
 	router.HandleFunc("/removemodel/{name}/{modelnum}", middleware((db.RemoveModel)))
-	log.Println("Starting server...")
+	log.Println("Server started...")
 	http.ListenAndServe(":8070", router)
 }
 
@@ -92,6 +93,7 @@ func (d *dbHandler) GetAllmodels(w http.ResponseWriter, req *http.Request) {
 func (d *dbHandler) AddModel(w http.ResponseWriter, req *http.Request) {
 	var newHWModel HwModel
 	inputForm, _ := ioutil.ReadAll(req.Body)
+
 	defer req.Body.Close()
 	err := json.Unmarshal(inputForm, &newHWModel)
 	if err != nil {
@@ -100,9 +102,10 @@ func (d *dbHandler) AddModel(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	q, err := d.db.Prepare("INSERT INTO hwmodels(name, `set`, year, manufacturer, model_number) VALUES(?,?,?,?)")
-
-	_, err = q.Exec(newHWModel.Name, newHWModel.Set, newHWModel.Year, newHWModel.Manufacturer, newHWModel.ModelNumber)
+	q, err := d.db.Prepare("INSERT INTO hwmodels(name, `set`, year, manufacturer, model_number) VALUES(?,?,?,?,?)")
+	y, _ := strconv.Atoi(newHWModel.Year)
+	mn, _ := strconv.Atoi(newHWModel.ModelNumber)
+	_, err = q.Exec(newHWModel.Name, newHWModel.Set, y, newHWModel.Manufacturer, mn)
 
 	if err != nil {
 		log.Fatal(err)
