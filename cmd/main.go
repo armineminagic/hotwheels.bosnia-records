@@ -97,18 +97,17 @@ func (d *dbHandler) AddModel(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	err := json.Unmarshal(inputForm, &newHWModel)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	q, err := d.db.Prepare("INSERT INTO hwmodels(name, `set`, year, manufacturer, model_number) VALUES(?,?,?,?,?)")
 	y, _ := strconv.Atoi(newHWModel.Year)
-	mn, _ := strconv.Atoi(newHWModel.ModelNumber)
-	_, err = q.Exec(newHWModel.Name, newHWModel.Set, y, newHWModel.Manufacturer, mn)
+	_, err = q.Exec(newHWModel.Name, newHWModel.Set, y, newHWModel.Manufacturer, newHWModel.ModelNumber)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -120,7 +119,7 @@ func (d *dbHandler) RemoveModel(w http.ResponseWriter, req *http.Request) {
 
 	_, err := d.db.Query("DELETE FROM hwmodels WHERE name=? and model_number=?", args["name"], args["modelnum"])
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -27,7 +27,7 @@ function fillTable(data) {
         trow += "<td>" + element.year + "</td>";
         trow += "<td>" + element.modelnumber + "</td>";
         trow += "<td>" + element.manufacturer + "</td>";
-        trow += "<td> <div class=\"btn-group pull-right\"> <button type=\"button\" class=\"btn btn-info\" onclick=\"edit()\" id=\"edit\"> Edit </button> <button type=\"button\" class=\"btn btn-danger\" onlick=\"removeModel(this)\" id=\"remove\">Remove</button></div></td></tr>";
+        trow += "<td><div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-info\" onclick=\"edit()\" id=\"edit\"> Edit </button> <button type=\"button\" class=\"btn btn-danger\" onclick=\"removeModel(this);\" id=\"remove\">Remove</button></div></td></tr>";
     })
     document.getElementById('data').innerHTML = trow;
 }
@@ -67,11 +67,14 @@ function addData(){
 
 function removeModel(object){
     console.log("REMOVE");
-    if (typeof(object) == "object") {
-        var curentRow = ($object).closest("tr");
-        var name = curentRow.find("td:eq(0)").text();
+        if (typeof(object) == "object") {
+        currentRow = object.parentElement.parentElement.parentElement;
+        console.log(currentRow.innerHTML);
+
+        var name = currentRow.find("td").eq(1).text();
         var modelnum = curentRow.find("td:eq(3)").text();
         var xhttp = new XMLHttpRequest();
+        console.log(name)
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200){
                 getData();
